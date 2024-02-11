@@ -1,0 +1,28 @@
+.min {
+  box-sizing: border-box;
+}
+.panel1 {
+  grid-template-columns: 1fr 3fr;
+}
+.widget {
+  float: left;
+  background-color: #f1f5f9;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.graphic {
+  float: left;
+  background-color: #f1f5f9;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.panel1 iframe {
+  width: 100%;
+  height: 300px;
+}
+
+.panel1 iframe:last-child {
+  height: 500px;
+}
