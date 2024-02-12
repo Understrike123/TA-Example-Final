@@ -1,0 +1,26 @@
+version: "3.9"
+services:
+  mongoDB:
+    image: "mongo:4.4.6"
+    container_name: "seismic_mongo"
+    ports:
+      - "27017:27017"
+
+  flask:
+    image: "seismic_backend:1.0"
+    container_name: "seismic_backend"
+    build:
+      context: ./backend
+    ports:
+      - "127.0.0.1:5000:5000"
+
+  nextjs:
+    image: "seismic_frontend:1.0"
+    container_name: "seismic_frontend"
+    build:
+      context: ./example-3
+    ports:
+      - "3000:3000"
+    depends_on:
+      - flask
+      - mongoDB

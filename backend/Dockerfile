@@ -8,4 +8,4 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-CMD python -m flask --app main run --host=0.0.0.0 --port=5001
+CMD python3 main.py SEISMIC2D--test_LINE_EW_PERIHAKA_100

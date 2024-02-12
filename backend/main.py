@@ -1,5 +1,3 @@
-import os
-import json
 from flask import request, render_template
 from flask import Flask, request, jsonify
 import panel as pn
@@ -19,7 +17,6 @@ from bokeh.models.widgets import PreText
 import logging
 from bokeh.embed import json_item
 from flask_cors import CORS
-import base64
 
 logger = logging.getLogger('panel.callbacks')
 

@@ -18,13 +18,11 @@ from panel.layout import Column
 from bokeh.models.widgets import PreText
 import logging
 from bokeh.embed import json_item
-from flask_cors import CORS
 import base64
 
 logger = logging.getLogger('panel.callbacks')
 
 app = Flask(__name__)
-CORS(app)
 
 import os 
 MONGODB_ADDRESS = "localhost"
