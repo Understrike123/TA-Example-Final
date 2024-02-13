@@ -12,7 +12,7 @@ services:
     build:
       context: ./backend
     ports:
-      - "127.0.0.1:5000:5000"
+      - "5000:5000"
 
   nextjs:
     image: "seismic_frontend:1.0"
@@ -24,3 +24,5 @@ services:
     depends_on:
       - flask
       - mongoDB
+    volumes:
+      - .:/pages

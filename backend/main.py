@@ -9,6 +9,7 @@ import numpy as np
 import pymongo
 from bokeh.io import curdoc
 import pandas as pd
+from gevent.pywsgi import WSGIServer
 from curveintersect import intersection
 from scipy.spatial import KDTree
 from os import walk
@@ -17,6 +18,7 @@ from bokeh.models.widgets import PreText
 import logging
 from bokeh.embed import json_item
 from flask_cors import CORS
+import os
 
 logger = logging.getLogger('panel.callbacks')
 
@@ -25,13 +27,7 @@ CORS(app)
 
 import os 
 MONGODB_ADDRESS = "localhost"
-# MONGODB_ADDRESS = os.environ["MONGODB_ADDRESS"]
 
-colr = pn.widgets.Select(name='Select Color Scale', options=['gray', 'RdGy','BrBG','coolwarm','cwr','RdBu', 'spectral', 'fire', 'magma', 'seismic', 'bwr', 'jet'], max_height=50)
-amp = pn.widgets.TextInput(name='Amplitude', value='1000', max_height=50)
-cmpinc  = pn.widgets.TextInput(name='CMP Inc.', value='100', max_height=50)
-xlaborient  = pn.widgets.TextInput(name='X-label Orientation', value='10', max_height=50)
-textcanvas = pn.widgets.TextInput(name='Plot Height', value ='800', max_height=50)
 ebcdictext = PreText(text="", width=720, height=600)
 ########################################################
 mongo_client = pymongo.MongoClient(f'mongodb://{MONGODB_ADDRESS}:27017')
@@ -344,5 +340,5 @@ def seismic():
         return jsonify({'error': 'Internal Server Error'}), 500
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=5000)
 
