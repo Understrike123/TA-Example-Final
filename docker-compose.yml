@@ -1,18 +1,20 @@
 version: "3.9"
 services:
-  mongoDB:
-    image: "mongo:4.4.6"
+  seismic_mongo:
+    image: "mongo:latest"
     container_name: "seismic_mongo"
     ports:
       - "27017:27017"
 
-  flask:
+  seismic_backend:
     image: "seismic_backend:1.0"
     container_name: "seismic_backend"
     build:
       context: ./backend
     ports:
       - "5000:5000"
+    volumes:
+      - "./backend:/app"
 
   nextjs:
     image: "seismic_frontend:1.0"
@@ -21,8 +23,17 @@ services:
       context: ./example-3
     ports:
       - "3000:3000"
-    depends_on:
-      - flask
-      - mongoDB
     volumes:
-      - .:/pages
+      - "./example-3/pages:/app/pages"
+
+  py_app:
+    image: "py_app:1.0"
+    container_name: "py_app"
+    build:
+      context: ./py_app
+    ports:
+      - "5006:5006"
+    environment:
+      - BOKEH_ALLOW_WS_ORIGIN=*
+    volumes:
+      - "./py_app:/app"

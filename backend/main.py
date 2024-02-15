@@ -9,7 +9,6 @@ import numpy as np
 import pymongo
 from bokeh.io import curdoc
 import pandas as pd
-from gevent.pywsgi import WSGIServer
 from curveintersect import intersection
 from scipy.spatial import KDTree
 from os import walk
@@ -19,15 +18,18 @@ import logging
 from bokeh.embed import json_item
 from flask_cors import CORS
 import os
-
 logger = logging.getLogger('panel.callbacks')
 
 app = Flask(__name__)
 CORS(app)
 
-import os 
-MONGODB_ADDRESS = "localhost"
+MONGODB_ADDRESS = "seismic_mongo"
 
+colr = pn.widgets.Select(name='Select Color Scale', options=['gray', 'RdGy','BrBG','coolwarm','cwr','RdBu', 'spectral', 'fire', 'magma', 'seismic', 'bwr', 'jet'], max_height=50)
+amp = pn.widgets.TextInput(name='Amplitude', value='1000', max_height=50)
+cmpinc  = pn.widgets.TextInput(name='CMP Inc.', value='100', max_height=50)
+xlaborient  = pn.widgets.TextInput(name='X-label Orientation', value='10', max_height=50)
+textcanvas = pn.widgets.TextInput(name='Plot Height', value ='800', max_height=50)
 ebcdictext = PreText(text="", width=720, height=600)
 ########################################################
 mongo_client = pymongo.MongoClient(f'mongodb://{MONGODB_ADDRESS}:27017')
@@ -139,8 +141,6 @@ def seismic():
         
         # Mendapatkan data dari body permintaan POST
         data = request.json
-        print("variabel data: ", data)
-        print("variabel params: ", params)
 
         # Mendapatkan nilai-nilai dari data
         colr_value = data['colr']
@@ -152,24 +152,25 @@ def seismic():
         
 
         uniquelines = params[1:]
-        print("variabel uniquelines: ", uniquelines)
         ###agus
         uniqueline = []
         for line in uniquelines:
             a = line.split('_')
             selectproject = a[0]
             uniqueline.append('_'.join(a[1:None]))
-        uniquelines = uniqueline
-
+        uniquelines = uniqueline   
         ###EBDIC
         ebcdic = np.load(f'./TEMP_test/ebcdic_LINE_EW_PERIHAKA_100.npy')
         ebcdictext.text = str(ebcdic)
 
         if len(uniquelines)==1:
             selectseismic = uniquelines[0]
+            
             mydb = mongo_client[selectproject]
             mycol = mongoCollection
+            
             cmpnos = np.sort(mycol.find().distinct('CMP_NO'))
+            
             cmpnos = [int(i) for i in cmpnos]
             mydoc = mycol.aggregate(
                 [
@@ -179,7 +180,6 @@ def seismic():
             traces = np.array([cPickle.loads(x['amp']) for x in mydoc]).T
 
             literal = list(np.load(f'./TEMP_test/LINE_EW_PERIHAKA_100.convpar')[:, 0])
-
             mydoc = mycol.aggregate(
                 [
                     {"$match": {'CMP_NO': {"$gte": cmpnos[0], "$lte": cmpnos[-1]}}},
@@ -236,7 +236,7 @@ def seismic():
                 seismic = composite.loc[composite['z'] == selectproject+'_'+selectseismic]
                 XCMP = list(seismic.x )  # MANPULATE
                 mycol = mongoCollection
-                literal = list(np.load(f'./TEMP_test/LINE_EW_PERIHAKA_100.convpar')[:, 0])
+                literal = list(np.load(f'./TEMP_test/{selectseismic}.convpar')[:, 0])
                 mydoc = mycol.aggregate(
                     [
                         {"$match": {'XCMP': {"$gte": min(XCMP), "$lte": max(XCMP)}}},

@@ -5,6 +5,7 @@ import styles from "../components/dashboard/dashboard.module.css";
 import loadBokehJS from "../lib/loadBokeh";
 
 const Index = () => {
+  const SERVER_ADDRESS = "seismic_backend";
   const [selectedOption, setSelectedOption] = useState("gray");
   const [numberValues, setNumberValues] = useState(["435", "100", "10", "800"]);
   const [bokehPlot, setBokehPlot] = useState(null);
@@ -12,14 +13,13 @@ const Index = () => {
 
   const handleDropdownChange = (event) => {
     setSelectedOption(event.target.value);
-    sendDataToFlask(); // Panggil sendDataToFlask setiap kali nilai dropdown berubah
+    sendDataToFlask();
   };
 
   const handleNumberInputChange = (event, index) => {
     const newNumberValues = [...numberValues];
     newNumberValues[index] = event.target.value;
     setNumberValues(newNumberValues);
-    sendDataToFlask(); // Panggil sendDataToFlask setiap kali nilai input berubah
   };
 
   const sendDataToFlask = async () => {
@@ -32,7 +32,8 @@ const Index = () => {
     };
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/seisview2d", {
+      console.log(formData);
+      const response = await fetch("http://192.168.0.7:5000/seisview2d", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -75,6 +76,13 @@ const Index = () => {
       .catch((error) => console.error("Failed to load BokehJS:", error));
   }, []);
 
+  // Fungsi untuk mengirim data ke server Flask saat tombol enter ditekan
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      sendDataToFlask();
+    }
+  };
+
   return (
     <div>
       <Dashboard />
@@ -108,6 +116,7 @@ const Index = () => {
                 id="number1"
                 value={numberValues[0]}
                 onChange={(event) => handleNumberInputChange(event, 0)}
+                onKeyDown={handleKeyPress}
               />
             </div>
             <div>
@@ -117,6 +126,7 @@ const Index = () => {
                 id="number2"
                 value={numberValues[1]}
                 onChange={(event) => handleNumberInputChange(event, 1)}
+                onKeyDown={handleKeyPress}
               />
             </div>
             <div>
@@ -126,6 +136,7 @@ const Index = () => {
                 id="number3"
                 value={numberValues[2]}
                 onChange={(event) => handleNumberInputChange(event, 2)}
+                onKeyDown={handleKeyPress}
               />
             </div>
             <div>
@@ -135,12 +146,11 @@ const Index = () => {
                 id="number4"
                 value={numberValues[3]}
                 onChange={(event) => handleNumberInputChange(event, 3)}
+                onKeyDown={handleKeyPress}
               />
             </div>
           </div>
-          <div id="myplot" className={styles.graphic}>
-            <div></div>
-          </div>
+          <div id="myplot" className={styles.graphic}></div>
         </div>
       </div>
     </div>
