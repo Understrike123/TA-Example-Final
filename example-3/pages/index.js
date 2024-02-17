@@ -23,6 +23,7 @@ const Index = () => {
   };
 
   const sendDataToFlask = async () => {
+    //fungsi asyncronous untuk mengirimkan data dan menerima data dari server flask
     const formData = {
       colr: selectedOption,
       amp: numberValues[0],
@@ -32,15 +33,16 @@ const Index = () => {
     };
 
     try {
-      console.log(formData);
-      const response = await fetch("http://192.168.0.7:5000/seisview2d", {
-        method: "POST",
+      const response = await fetch("http://127.0.0.1:5000/seisview2d", {
+        //menangkap server flask men-teransfer data
+
+        method: "POST", //method POST digunakan karena mengirimkan data ke flask
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
-      const data = await response.json();
+      const data = await response.json(); //respon dari server flask diterima dan dimasukkan ke dalam variabel data
       setBokehPlot(data);
       console.log(data);
     } catch (error) {
@@ -50,7 +52,7 @@ const Index = () => {
 
   useEffect(() => {
     sendDataToFlask();
-  }, []); // Panggil sendDataToFlask saat komponen dimuat
+  }, []); // Panggil sendDataToFlask saat halaman dimuat
 
   useEffect(() => {
     if (bokehPlot) {

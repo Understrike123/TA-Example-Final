@@ -16,7 +16,7 @@ services:
     volumes:
       - "./backend:/app"
 
-  nextjs:
+  seismic_frontend:
     image: "seismic_frontend:1.0"
     container_name: "seismic_frontend"
     build:
@@ -37,3 +37,14 @@ services:
       - BOKEH_ALLOW_WS_ORIGIN=*
     volumes:
       - "./py_app:/app"
+
+  nginx:
+    build:
+      context: ./
+    ports:
+      - "8080:8080"
+    volumes:
+      - "./nginx.conf:/etc/nginx/nginx.conf"
+    depends_on:
+      - seismic_frontend
+      - seismic_backend

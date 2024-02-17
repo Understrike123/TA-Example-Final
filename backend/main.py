@@ -149,8 +149,6 @@ def seismic():
         textcanvas_value = data['textcanvas']
         xlaborient_value = data['xlaborient']
 
-        
-
         uniquelines = params[1:]
         ###agus
         uniqueline = []
@@ -330,7 +328,7 @@ def seismic():
         layout = Column(img)  # Buat layout Panel dari objek Holoviews
         pn_panel = pn.panel(layout)  # Konversi layout Holoviews ke objek Panel
     
-        result = json_item(pn_panel.get_root(), "myplot")  # Render objek Panel ke JSON
+        result = json_item(pn_panel.get_root(), "myplot")  # Mengubah objek Panel ke JSON
     
         return jsonify(result), 200
 
